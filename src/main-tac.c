@@ -2,7 +2,7 @@
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
 // date: Nov 5, 2019
-// version-1.0.0
+// version-1.0.1
 //
 // The Clear BSD License
 //
@@ -46,28 +46,30 @@ int get_file_len(FILE* fp) {
 }
 
 int main(int argc, char** argv) {
-  FILE *fptr;
+  if (argc > 1) {
+    for (int f = 1; f < argc; f++) {
+      FILE* fptr = fopen(argv[f], "r");
+      if (fptr == NULL) {
+        perror(argv[f]);
+        return(1);
+      }
+      int lines = get_file_len(fptr);
 
-  char filename[100];
+      // Not the best way, but it will work for now...
+      for (int i = lines+1; i > 0; i--) {
+        rewind(fptr);
+        print_file_line(fptr, i);
+      }
+      fclose(fptr);
+    }
+  } else {
+    int lines = get_file_len(stdin);
 
-  // TODO: Need to loop throught all the files!
-  strcpy(filename, argv[1]);
-
-  fptr = fopen(filename, "r");
-  if (fptr == NULL) {
-    perror(filename);
-    return(1);
+    for (int i = lines+1; i > 0; i--) {
+      rewind(stdin);
+      print_file_line(stdin, i);
+    }
   }
-
-  int lines = get_file_len(fptr);
-
-  // Not the best way, but it will work for now...
-  for (int i = lines+1; i > 0; i--) {
-    rewind(fptr);
-    print_file_line(fptr, i);
-  }
-
-  fclose(fptr);
 
   return(0);
 }
