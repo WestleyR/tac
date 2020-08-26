@@ -18,12 +18,13 @@
 
 int print_file_line(FILE* fp, int line) {
   int l = 1;
-  char c;
+  int c;
 
   c = fgetc(fp);
   while (c != EOF) {
     if (c == '\n') l++;
     if (c != '\n' && l == line) printf("%c", c);
+    if (l > line) break;
     c = fgetc(fp);
   }
   printf("\n");
